@@ -17,17 +17,11 @@ public record OrderResponse(
 
 
         return new OrderResponse(
-
                 order.getId(),
-
                 order.getCustomerId(),
-
                 order.getTotal(),
-
                 order.getStatus().name(),
-
                 order.getCreatedAt()
-
         );
     }
 }

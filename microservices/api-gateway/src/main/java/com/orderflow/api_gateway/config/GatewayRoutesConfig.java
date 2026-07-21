@@ -1,6 +1,7 @@
 package com.orderflow.api_gateway.config;
 
 import com.orderflow.api_gateway.filter.CorrelationIdFilter;
+import com.orderflow.api_gateway.filter.GatewayErrorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.function.RouterFunction;
@@ -15,11 +16,11 @@ import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFuncti
 @Configuration
 public class GatewayRoutesConfig {
 
-    private final CorrelationIdFilter  correlationIdFilter;
+    private final GatewayErrorFilter gatewayErrorFilter;
 
+    public GatewayRoutesConfig(CorrelationIdFilter correlationIdFilter, GatewayErrorFilter gatewayErrorFilter) {
 
-    public GatewayRoutesConfig(CorrelationIdFilter correlationIdFilter) {
-        this.correlationIdFilter = correlationIdFilter;
+        this.gatewayErrorFilter = gatewayErrorFilter;
     }
 
     @Bean
@@ -35,10 +36,8 @@ public class GatewayRoutesConfig {
                 )
                 .before(uri("http://localhost:8081"))
                 .filter(
-                        correlationIdFilter
-                                .addCorrelationId()
+                        gatewayErrorFilter.handleErrors()
                 )
-
                 .build();
     }
 }

@@ -11,29 +11,22 @@ spring:
         routes:
 
           - id: order-service
-
             uri: http://localhost:8081
-
             predicates:
-
               - Path=/api/orders/**
 
 management:
-
   endpoints:
-
     web:
-
       exposure:
-
         include:
           - health
           - info
 
-
   endpoint:
-
     health:
-
       show-details: always
 
+logging:
+  pattern:
+    level: "%5p [correlationId=%X{X-Correlation-Id}]"
