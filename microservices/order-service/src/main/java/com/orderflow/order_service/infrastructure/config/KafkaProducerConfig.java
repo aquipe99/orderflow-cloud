@@ -21,7 +21,7 @@ public class KafkaProducerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ProducerFactory<String, OrderCreatedEvent> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory() {
 
 
         Map<String,Object> configs = new HashMap<>();
@@ -57,8 +57,8 @@ public class KafkaProducerConfig {
 
 
     @Bean
-    public KafkaTemplate<String, OrderCreatedEvent> kafkaTemplate(
-            ProducerFactory<String, OrderCreatedEvent> producerFactory) {
+    public KafkaTemplate<String, Object> kafkaTemplate(
+            ProducerFactory<String, Object> producerFactory) {
 
 
         return new KafkaTemplate<>(producerFactory);
