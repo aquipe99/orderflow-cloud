@@ -1,0 +1,54 @@
+
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: inventory-service
+
+  datasource:
+
+    url: jdbc:postgresql://localhost:5434/orderflow
+
+    username: postgres
+
+    password: password
+
+  jpa:
+
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+    properties:
+
+      hibernate:
+        format_sql: true
+
+  kafka:
+
+    bootstrap-servers: localhost:29092
+
+management:
+
+  endpoints:
+
+    web:
+
+      exposure:
+
+        include:
+          - health
+          - info
+
+orderflow:
+
+  kafka:
+
+    topics:
+
+      order-created: orders.created
+
+      inventory-reserved: inventory.reserved

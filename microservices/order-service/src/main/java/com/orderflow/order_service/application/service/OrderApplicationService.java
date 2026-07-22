@@ -1,6 +1,8 @@
 package com.orderflow.order_service.application.service;
 
+import com.orderflow.order_service.application.dto.request.OrderItemRequest;
 import com.orderflow.order_service.application.event.OrderCreatedEvent;
+import com.orderflow.order_service.application.event.OrderItemEvent;
 import com.orderflow.order_service.application.port.input.CancelOrderUseCase;
 import com.orderflow.order_service.application.port.input.CreateOrderUseCase;
 import com.orderflow.order_service.application.port.input.GetOrderUseCase;
@@ -10,10 +12,12 @@ import com.orderflow.order_service.application.port.output.FindOrderPort;
 import com.orderflow.order_service.application.port.output.PublishOrderCreatedEventPort;
 import com.orderflow.order_service.application.port.output.SaveOrderPort;
 import com.orderflow.order_service.domain.model.Order;
+import com.orderflow.order_service.domain.model.OrderItem;
 import com.orderflow.order_service.domain.model.OrderStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,17 +48,34 @@ public class OrderApplicationService  implements CreateOrderUseCase ,
 
 
     @Override
-    public Order createOrder(Long customerId, BigDecimal total) {
-        Order order = new Order(UUID.randomUUID(),customerId,total);
-        Order savedOrder = saveOrderPort.save(order);
+    public Order createOrder(Long customerId, List<OrderItemRequest> items, BigDecimal total) {
+        List<OrderItem> orderItems =
+                items.stream()
+                        .map(item ->
+                                new OrderItem(
+                                        item.productCode(),
+                                        item.quantity()
+                                )
+                        )
+                        .toList();
 
+        Order order = new Order(UUID.randomUUID(),customerId,orderItems,total);
+        Order savedOrder = saveOrderPort.save(order);
+        List<OrderItemEvent> eventItems =
+                savedOrder.getItems()
+                        .stream()
+                        .map(item ->
+                                new OrderItemEvent(
+                                        item.getProductCode(),
+                                        item.getQuantity()
+                                )
+                        )
+                        .toList();
         OrderCreatedEvent event= new OrderCreatedEvent(
                 savedOrder.getId(),
-
                 savedOrder.getCustomerId(),
-
+                eventItems,
                 savedOrder.getTotal(),
-
                 savedOrder.getCreatedAt()
         );
         publishEventPort.publish(event);

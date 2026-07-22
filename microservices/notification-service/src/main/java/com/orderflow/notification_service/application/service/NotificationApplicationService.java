@@ -9,10 +9,20 @@ import org.springframework.stereotype.Service;
 public class NotificationApplicationService {
     public void process(OrderCreatedEvent event) {
 
-
         log.info("===============================================");
         log.info("NEW ORDER RECEIVED");
-        log.info("Order Id : {}", event.orderId());
+        log.info("Order Id     : {}", event.orderId());
+        log.info("Customer Id  : {}", event.customerId());
+        log.info("Total        : {}", event.total());
+        log.info("Created At   : {}", event.createdAt());
+
+        log.info("Items:");
+
+        event.items().forEach(item ->
+                log.info("   Product: {} | Quantity: {}",
+                        item.productCode(),
+                        item.quantity())
+        );
 
         throw new RuntimeException("Simulating email server failure");
     }

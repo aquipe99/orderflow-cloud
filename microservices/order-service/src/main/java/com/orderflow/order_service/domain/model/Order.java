@@ -2,6 +2,7 @@ package com.orderflow.order_service.domain.model;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public class Order {
@@ -10,7 +11,7 @@ public class Order {
 
     private final Long customerId;
 
-
+    private final List<OrderItem> items;
     private final BigDecimal total;
 
 
@@ -24,10 +25,18 @@ public class Order {
     public Order(
             UUID id,
             Long customerId,
+            List<OrderItem> items,
             BigDecimal total) {
         validateTotal(total);
+        if(items == null || items.isEmpty()){
+
+            throw new IllegalArgumentException(
+                    "Order must have items"
+            );
+        }
         this.id = id;
         this.customerId = customerId;
+        this.items = items;
         this.total = total;
         this.status = OrderStatus.CREATED;
         this.createdAt = Instant.now();
@@ -36,6 +45,7 @@ public class Order {
     public Order(
             UUID id,
             Long customerId,
+            List<OrderItem> items,
             BigDecimal total,
             OrderStatus status,
             Instant createdAt) {
@@ -44,6 +54,7 @@ public class Order {
 
         this.id = id;
         this.customerId = customerId;
+        this.items = items;
         this.total = total;
         this.status = status;
         this.createdAt = createdAt;
@@ -102,7 +113,9 @@ public class Order {
         this.status = OrderStatus.CANCELLED;
 
     }
-
+    public List<OrderItem> getItems() {
+        return items;
+    }
     public UUID getId() {
         return id;
     }

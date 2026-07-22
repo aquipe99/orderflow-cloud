@@ -3,6 +3,7 @@ package com.orderflow.order_service.api.controller;
 import com.orderflow.order_service.api.dto.CreateOrderRequest;
 import com.orderflow.order_service.api.dto.OrderResponse;
 import com.orderflow.order_service.api.dto.UpdateOrderRequest;
+import com.orderflow.order_service.api.mapper.OrderApiMapper;
 import com.orderflow.order_service.application.port.input.CancelOrderUseCase;
 import com.orderflow.order_service.application.port.input.CreateOrderUseCase;
 import com.orderflow.order_service.application.port.input.GetOrderUseCase;
@@ -19,15 +20,16 @@ public class OrderController {
 
     private final CreateOrderUseCase createOrderUseCase;
     private final GetOrderUseCase getOrderUseCase;
-
     private final UpdateOrderUseCase updateOrderUseCase;
-
     private final CancelOrderUseCase cancelOrderUseCase;
-    public OrderController(CreateOrderUseCase createOrderUseCase, GetOrderUseCase getOrderUseCase, UpdateOrderUseCase updateOrderUseCase, CancelOrderUseCase cancelOrderUseCase) {
+    private final OrderApiMapper mapper;
+
+    public OrderController(CreateOrderUseCase createOrderUseCase, GetOrderUseCase getOrderUseCase, UpdateOrderUseCase updateOrderUseCase, CancelOrderUseCase cancelOrderUseCase, OrderApiMapper mapper) {
         this.createOrderUseCase = createOrderUseCase;
         this.getOrderUseCase = getOrderUseCase;
         this.updateOrderUseCase = updateOrderUseCase;
         this.cancelOrderUseCase = cancelOrderUseCase;
+        this.mapper = mapper;
     }
 
 
@@ -43,6 +45,7 @@ public class OrderController {
         return OrderResponse.from(
                 createOrderUseCase.createOrder(
                         request.customerId(),
+                        mapper.toApplicationItems(request),
                         request.total()
                 )
         );
