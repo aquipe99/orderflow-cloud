@@ -72,6 +72,7 @@ public class OrderApplicationService  implements CreateOrderUseCase ,
                         )
                         .toList();
         OrderCreatedEvent event= new OrderCreatedEvent(
+                UUID.randomUUID(),
                 savedOrder.getId(),
                 savedOrder.getCustomerId(),
                 eventItems,
