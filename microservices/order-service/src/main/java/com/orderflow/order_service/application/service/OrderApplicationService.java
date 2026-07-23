@@ -11,12 +11,14 @@ import com.orderflow.order_service.application.port.output.SaveOrderPort;
 import com.orderflow.order_service.domain.model.Order;
 import com.orderflow.order_service.domain.model.OrderItem;
 import com.orderflow.order_service.domain.model.OrderStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class OrderApplicationService  implements CreateOrderUseCase ,
         GetOrderUseCase,
@@ -111,11 +113,11 @@ public class OrderApplicationService  implements CreateOrderUseCase ,
 
     @Override
     public Order updateStatus(UUID orderId, OrderStatus status) {
-
+        log.info("Paso 1");
         Order order = findOrderPort.findById(orderId)
                 .orElseThrow(() ->
                         new RuntimeException("Order not found"));
-
+        log.info("Paso 2");
         switch (status) {
 
             case INVENTORY_RESERVED ->
@@ -135,7 +137,13 @@ public class OrderApplicationService  implements CreateOrderUseCase ,
                             "Invalid order transition");
         }
 
-        return saveOrderPort.save(order);
+        log.info("Paso 3");
+
+        Order saved = saveOrderPort.save(order);
+
+        log.info("Paso 4");
+
+        return saved;
     }
 
 

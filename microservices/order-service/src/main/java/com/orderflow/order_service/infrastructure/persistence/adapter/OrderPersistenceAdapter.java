@@ -4,6 +4,7 @@ import com.orderflow.order_service.application.port.output.DeleteOrderPort;
 import com.orderflow.order_service.application.port.output.FindOrderPort;
 import com.orderflow.order_service.application.port.output.SaveOrderPort;
 import com.orderflow.order_service.domain.model.Order;
+import com.orderflow.order_service.infrastructure.persistence.entity.OrderEntity;
 import com.orderflow.order_service.infrastructure.persistence.mapper.OrderPersistenceMapper;
 import com.orderflow.order_service.infrastructure.persistence.repository.OrderJpaRepository;
 import org.springframework.stereotype.Component;
@@ -48,7 +49,19 @@ public class OrderPersistenceAdapter implements SaveOrderPort,
 
     @Override
     public Optional<Order> findById(UUID id) {
-        return repository.findById(id)
-                .map(mapper::toDomain);
+        System.out.println("A");
+
+        Optional<OrderEntity> entity = repository.findById(id);
+
+        System.out.println("B");
+
+        return entity.map(e -> {
+
+            System.out.println("C");
+
+            return mapper.toDomain(e);
+        });
+//        return repository.findById(id)
+//                .map(mapper::toDomain);
     }
 }

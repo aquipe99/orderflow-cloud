@@ -31,10 +31,19 @@ public class InventoryReservedConsumer {
         );
 
 
-        updateOrderUseCase.updateStatus(
-                event.orderId(),
-                OrderStatus.INVENTORY_RESERVED
-        );
+        try {
+
+            updateOrderUseCase.updateStatus(
+                    event.orderId(),
+                    OrderStatus.INVENTORY_RESERVED
+            );
+
+        } catch (Exception ex){
+
+            ex.printStackTrace();
+
+            throw ex;
+        }
 
 
         log.info(
